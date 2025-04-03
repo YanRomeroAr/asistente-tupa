@@ -20,14 +20,20 @@ st.markdown("""
             background-color: white !important;
             color: black !important;
         }
-        .stMarkdown h1, .stMarkdown h2, .stMarkdown p, .markdown-text-container {
+        .stMarkdown h1, .stMarkdown h2, .stMarkdown p, .markdown-text-container,
+        .stChatMessage p, .stChatMessage ul, .stChatMessage ol, .stChatMessage li,
+        .stChatMessage span, .stChatMessage div {
             color: black !important;
         }
         .block-container {
             padding-top: 1rem;
         }
-        .stChatMessage, .stChatInputContainer {
+        .stChatMessage, .stChatInputContainer, .stTextInput, .stTextArea {
             background-color: white !important;
+            color: black !important;
+        }
+        input, textarea {
+            color: black !important;
         }
     </style>
 """, unsafe_allow_html=True)
