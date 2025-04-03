@@ -48,7 +48,7 @@ st.markdown("""
 st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=300)
 
 # Título y subtítulo
-st.title("Asistente Virtual sobre el TUPA")
+st.title("TUAI - Texto Único asistido por IA")
 st.markdown("Haz tus consultas sobre trámites administrativos y obtén respuestas claras y rápidas.")
 
 # ---------------------------
