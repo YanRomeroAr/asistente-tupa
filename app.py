@@ -13,7 +13,7 @@ assistant_id = st.secrets["assistant_id"]
 # ---------------------------
 st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="centered")
 
-# Estilos personalizados: fondo blanco, texto negro y entrada visible
+# Estilos personalizados: fondo blanco, texto negro, bordes negros
 st.markdown("""
     <style>
         html, body, .stApp {
@@ -42,13 +42,17 @@ st.markdown("""
         .stChatInputContainer input {
             background-color: white !important;
             color: black !important;
-            border: 1px solid #ccc !important;
+            border: 1px solid black !important;
+        }
+        .stChatInputContainer button {
+            background-color: black !important;
+            color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Logo superior
-st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=200)
+st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=300)
 
 # Título y subtítulo
 st.title("Asistente Virtual sobre el TUPA")
