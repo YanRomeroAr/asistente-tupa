@@ -6,7 +6,7 @@ import time
 # ---------------------------
 # CONFIGURACIÓN INICIAL
 # ---------------------------
-openai.api_key = "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"  # <- Coloca aquí tu clave secreta
+openai.api_key = "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"  # <- Coloca aquí tu clave secreta
 assistant_id = "asst_z1mqevyMFF33PTnBOZ5xL98L"  # <- Coloca aquí tu ID del asistente
 
 # ---------------------------
