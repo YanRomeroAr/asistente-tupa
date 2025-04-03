@@ -16,21 +16,29 @@ st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="center
 # Estilos personalizados: fondo blanco y texto negro, sin barras negras
 st.markdown("""
     <style>
-        html, body, .stApp, .block-container, .stChatInputContainer, .stChatMessage, .stTextInput, .stTextArea {
+        html, body, .stApp {
             background-color: white !important;
             color: black !important;
         }
-        .stMarkdown h1, .stMarkdown h2, .stMarkdown p, .markdown-text-container,
+        .stMarkdown h1, .stMarkdown h2, .stMarkdown p,
         .stChatMessage p, .stChatMessage ul, .stChatMessage ol, .stChatMessage li,
-        .stChatMessage span, .stChatMessage div, .stMarkdown {
+        .stChatMessage span, .stChatMessage div {
             color: black !important;
         }
         input, textarea {
             background-color: white !important;
             color: black !important;
         }
-        header, footer, .css-18ni7ap.e8zbici2, .css-h5rgaw.ea3mdgi1 {
+        header, footer, .block-container, .stChatInputContainer, .stTextInput, .stTextArea {
             background-color: white !important;
+        }
+        section.main > div:has(.element-container) {
+            padding-bottom: 3rem;
+        }
+        .stChatInputContainer input {
+            background-color: white !important;
+            color: black !important;
+            border: 1px solid #ccc !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -49,7 +57,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.ultima_pregunta = ""
     st.session_state.thread_id = None
-    st.session_state.historial_preguntas = []  # Lista de las últimas preguntas reales
+    st.session_state.historial_preguntas = []
 
 # ---------------------------
 # ENTRADA DEL USUARIO
@@ -67,34 +75,29 @@ frases_contextuales = [
 es_contextual = user_input and any(p in user_input.lower() for p in frases_contextuales)
 
 if user_input:
-    # Si es contextual, buscamos la última pregunta válida en el historial
     if es_contextual and st.session_state.historial_preguntas and st.session_state.thread_id:
-        referencia = st.session_state.historial_preguntas[-1]  # la más reciente
+        referencia = st.session_state.historial_preguntas[-1]
         prompt = f"Responde con más claridad sobre esto: {referencia}"
     else:
         prompt = user_input
         st.session_state.ultima_pregunta = user_input
         st.session_state.historial_preguntas.append(user_input)
-        # Nueva pregunta → nuevo thread
         thread = openai.beta.threads.create()
         st.session_state.thread_id = thread.id
 
     st.session_state.messages.append(("usuario", user_input))
 
-    # Enviar el mensaje al modelo
     openai.beta.threads.messages.create(
         thread_id=st.session_state.thread_id,
         role="user",
         content=prompt
     )
 
-    # Ejecutar el asistente
     run = openai.beta.threads.runs.create(
         thread_id=st.session_state.thread_id,
         assistant_id=assistant_id
     )
 
-    # Esperar respuesta
     with st.spinner("Pensando..."):
         while True:
             status = openai.beta.threads.runs.retrieve(
