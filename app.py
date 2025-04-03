@@ -13,15 +13,21 @@ assistant_id = st.secrets["assistant_id"]
 # ---------------------------
 st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="centered")
 
-# Estilos personalizados: fondo blanco y texto negro
+# Estilos personalizados: fondo blanco y texto negro, sin barras negras
 st.markdown("""
     <style>
-        body, .stApp {
-            background-color: white;
-            color: black;
+        html, body, .stApp {
+            background-color: white !important;
+            color: black !important;
         }
-        .stMarkdown h1, .stMarkdown h2, .stMarkdown p {
-            color: black;
+        .stMarkdown h1, .stMarkdown h2, .stMarkdown p, .markdown-text-container {
+            color: black !important;
+        }
+        .block-container {
+            padding-top: 1rem;
+        }
+        .stChatMessage, .stChatInputContainer {
+            background-color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
