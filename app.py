@@ -11,7 +11,25 @@ assistant_id = st.secrets["assistant_id"]
 # ---------------------------
 # CONFIGURACIÓN DE LA APP
 # ---------------------------
-st.set_page_config(page_title="Asistente TUPA", page_icon="🤖")
+st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="centered")
+
+# Estilos personalizados: fondo blanco y texto negro
+st.markdown("""
+    <style>
+        body, .stApp {
+            background-color: white;
+            color: black;
+        }
+        .stMarkdown h1, .stMarkdown h2, .stMarkdown p {
+            color: black;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Logo superior
+st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=200)
+
+# Título y subtítulo
 st.title("Asistente Virtual sobre el TUPA")
 st.markdown("Haz tus consultas sobre trámites administrativos y obtén respuestas claras y rápidas.")
 
