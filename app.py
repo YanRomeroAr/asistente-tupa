@@ -48,7 +48,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo superior
-st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=300)
+st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=200)
 
 # Título y subtítulo
 st.title("Asistente Virtual sobre el TUPA")
