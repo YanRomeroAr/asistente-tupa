@@ -16,30 +16,27 @@ st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="center
 # Estilos personalizados: fondo blanco y texto negro, sin barras negras
 st.markdown("""
     <style>
-        html, body, .stApp {
+        html, body, .stApp, .block-container, .stChatInputContainer, .stChatMessage, .stTextInput, .stTextArea {
             background-color: white !important;
             color: black !important;
         }
         .stMarkdown h1, .stMarkdown h2, .stMarkdown p, .markdown-text-container,
         .stChatMessage p, .stChatMessage ul, .stChatMessage ol, .stChatMessage li,
-        .stChatMessage span, .stChatMessage div {
-            color: black !important;
-        }
-        .block-container {
-            padding-top: 1rem;
-        }
-        .stChatMessage, .stChatInputContainer, .stTextInput, .stTextArea {
-            background-color: white !important;
+        .stChatMessage span, .stChatMessage div, .stMarkdown {
             color: black !important;
         }
         input, textarea {
+            background-color: white !important;
             color: black !important;
+        }
+        header, footer, .css-18ni7ap.e8zbici2, .css-h5rgaw.ea3mdgi1 {
+            background-color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Logo superior
-st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=200)
+st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=300)
 
 # Título y subtítulo
 st.title("Asistente Virtual sobre el TUPA")
