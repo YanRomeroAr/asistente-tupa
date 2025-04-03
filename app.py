@@ -13,7 +13,7 @@ assistant_id = st.secrets["assistant_id"]
 # ---------------------------
 st.set_page_config(page_title="Asistente TUPA", page_icon="🤖", layout="centered")
 
-# Estilos personalizados: fondo blanco, texto negro, bordes negros definidos
+# Estilos personalizados con compatibilidad para Chrome
 st.markdown("""
     <style>
         html, body, .stApp {
@@ -25,26 +25,15 @@ st.markdown("""
         .stChatMessage span, .stChatMessage div {
             color: black !important;
         }
-        input, textarea {
-            background-color: white !important;
-            color: black !important;
-        }
-        .block-container, header, footer, .stTextInput, .stTextArea,
-        .stChatInputContainer, .stChatInputContainer > div:first-child {
-            background-color: white !important;
-        }
-        section.main > div:has(.element-container) {
-            padding-bottom: 3rem;
-        }
-        .stChatInputContainer input::placeholder {
-            color: #666 !important;
-        }
-        .stChatInputContainer input {
+        input[type="text"] {
             background-color: white !important;
             color: black !important;
             border: 2px solid black !important;
             border-radius: 20px !important;
-            padding: 8px 12px !important;
+            padding: 10px !important;
+        }
+        input[type="text"]::placeholder {
+            color: #888 !important;
         }
         .stChatInputContainer button {
             background-color: black !important;
@@ -110,13 +99,16 @@ if user_input:
         assistant_id=assistant_id
     )
 
-    with st.spinner("Pensando..."):
+    with st.spinner("Generando respuesta..."):
         while True:
-            status = openai.beta.threads.runs.retrieve(
+            status_info = openai.beta.threads.runs.retrieve(
                 thread_id=st.session_state.thread_id,
                 run_id=run.id
             )
-            if status.status == "completed":
+            if status_info.status == "completed":
+                break
+            elif status_info.status == "failed":
+                st.error("Hubo un error al procesar la respuesta")
                 break
             time.sleep(1)
 
