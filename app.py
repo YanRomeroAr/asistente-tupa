@@ -22,29 +22,32 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.ultima_pregunta = ""
     st.session_state.thread_id = None
+    st.session_state.historial_preguntas = []  # Lista de las últimas preguntas reales
 
 # ---------------------------
 # ENTRADA DEL USUARIO
 # ---------------------------
 user_input = st.chat_input("Escribe tu consulta aquí...")
 
-# Palabras clave que indican aclaración o seguimiento implícito
+# Palabras clave que indican aclaración o referencia al contexto anterior
 frases_contextuales = [
     "no entendí", "explica", "dudas", "más claro", "más simple", "no me parece",
     "repite", "aclara", "sencillo", "para qué sirve", "cuál es el objetivo", 
     "qué finalidad tiene", "por qué se hace", "qué implica", "cuál es el propósito",
     "a qué se refiere", "qué significa esto", "no quedó claro", "detalla mejor",
-    "en otras palabras", "hazlo más fácil"
+    "en otras palabras", "hazlo más fácil", "explícame mejor", "no me queda claro"
 ]
 es_contextual = user_input and any(p in user_input.lower() for p in frases_contextuales)
 
 if user_input:
-    # Si es contextual y hay una pregunta anterior, se reformula
-    if es_contextual and st.session_state.ultima_pregunta and st.session_state.thread_id:
-        prompt = f"Responde con más claridad sobre esto: {st.session_state.ultima_pregunta}"
+    # Si es contextual, buscamos la última pregunta válida en el historial
+    if es_contextual and st.session_state.historial_preguntas and st.session_state.thread_id:
+        referencia = st.session_state.historial_preguntas[-1]  # la más reciente
+        prompt = f"Responde con más claridad sobre esto: {referencia}"
     else:
         prompt = user_input
         st.session_state.ultima_pregunta = user_input
+        st.session_state.historial_preguntas.append(user_input)
         # Nueva pregunta → nuevo thread
         thread = openai.beta.threads.create()
         st.session_state.thread_id = thread.id
