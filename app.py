@@ -45,10 +45,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo superior
-st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=200)
+st.image("https://piasar-capacita.creation.camp/wp-content/uploads/sites/55/2021/12/Logo-1-MVCS.png", width=300)
 
 # Título y subtítulo
-st.title("TUAI - Texto Único asistido por IA")
+st.title("Asistente Virtual sobre el TUPA")
 st.markdown("Haz tus consultas sobre trámites administrativos y obtén respuestas claras y rápidas.")
 
 # ---------------------------
@@ -118,7 +118,8 @@ if user_input:
 
         for msg in reversed(messages.data):
             if msg.role == "assistant":
-                respuesta = msg.content[0].text.value
+                import re
+                respuesta = re.sub(r'【\d+:.*?†.*?】', '', msg.content[0].text.value)
                 st.session_state.messages.append(("asistente", respuesta))
                 break
 
