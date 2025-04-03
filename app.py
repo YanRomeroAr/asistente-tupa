@@ -5,68 +5,68 @@ import time
 # ---------------------------
 # CONFIGURACIÓN SEGURA
 # ---------------------------
-# Estas claves deben estar configuradas en Streamlit Cloud > Manage app > Secrets
-# Ejemplo en Secrets:
-# openai_api_key = "sk-..."
-# assistant_id = "asst-..."
 openai.api_key = st.secrets["openai_api_key"]
 assistant_id = st.secrets["assistant_id"]
 
 # ---------------------------
-# CONFIGURACIÓN DE LA PÁGINA
+# CONFIGURACIÓN DE LA APP
 # ---------------------------
 st.set_page_config(page_title="Asistente TUPA", page_icon="🤖")
 st.title("Asistente Virtual sobre el TUPA")
 st.markdown("Haz tus consultas sobre trámites administrativos y obtén respuestas claras y rápidas.")
 
 # ---------------------------
-# HISTORIAL DE MENSAJES
+# GESTIÓN DE CONTEXTO CON THREAD PERSISTENTE
 # ---------------------------
-# Guardamos los mensajes para mostrar el historial en la interfaz
-if "messages" not in st.session_state:
+if "thread_id" not in st.session_state:
+    thread = openai.beta.threads.create()
+    st.session_state.thread_id = thread.id
     st.session_state.messages = []
+    st.session_state.ultima_pregunta = ""
 
 # ---------------------------
 # ENTRADA DEL USUARIO
 # ---------------------------
-# Caja de entrada tipo chat
 user_input = st.chat_input("Escribe tu consulta aquí...")
 
+# Detectar si la entrada es una aclaración (tipo "no entendí") con coincidencia parcial
+palabras_clave = ["no entendí", "explica", "dudas", "más claro", "más simple", "no me parece", "repite", "aclara", "sencillo"]
+es_aclaracion = user_input and any(palabra in user_input.lower() for palabra in palabras_clave)
+
 if user_input:
-    # Guardamos el mensaje del usuario
+    if es_aclaracion and st.session_state.ultima_pregunta:
+        prompt = f"Explica de forma más simple lo siguiente: {st.session_state.ultima_pregunta}"
+    else:
+        prompt = user_input
+        st.session_state.ultima_pregunta = user_input
+
     st.session_state.messages.append(("usuario", user_input))
 
-    # CREAMOS UN NUEVO THREAD por cada consulta (evita respuestas repetidas)
-    thread = openai.beta.threads.create()
-
-    # Enviamos el mensaje del usuario al modelo
     openai.beta.threads.messages.create(
-        thread_id=thread.id,
+        thread_id=st.session_state.thread_id,
         role="user",
-        content=user_input
+        content=prompt
     )
 
-    # Ejecutamos al asistente con el thread creado
     run = openai.beta.threads.runs.create(
-        thread_id=thread.id,
+        thread_id=st.session_state.thread_id,
         assistant_id=assistant_id
     )
 
-    # Esperamos la respuesta del asistente
     with st.spinner("Pensando..."):
         while True:
             status = openai.beta.threads.runs.retrieve(
-                thread_id=thread.id,
+                thread_id=st.session_state.thread_id,
                 run_id=run.id
             )
             if status.status == "completed":
                 break
             time.sleep(1)
 
-        # Obtenemos la respuesta del asistente
         messages = openai.beta.threads.messages.list(
-            thread_id=thread.id
+            thread_id=st.session_state.thread_id
         )
+
         for msg in reversed(messages.data):
             if msg.role == "assistant":
                 respuesta = msg.content[0].text.value
@@ -74,13 +74,8 @@ if user_input:
                 break
 
 # ---------------------------
-# MOSTRAR EL CHAT COMPLETO
+# MOSTRAR EL HISTORIAL DEL CHAT
 # ---------------------------
-# Mostramos todos los mensajes del historial tipo conversación
 for rol, mensaje in st.session_state.messages:
-    if rol == "usuario":
-        with st.chat_message("Usuario"):
-            st.markdown(mensaje)
-    else:
-        with st.chat_message("Asistente"):
-            st.markdown(mensaje)
+    with st.chat_message("Usuario" if rol == "usuario" else "Asistente"):
+        st.markdown(mensaje)
