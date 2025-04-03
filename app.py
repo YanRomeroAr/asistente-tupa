@@ -110,23 +110,14 @@ if user_input:
         assistant_id=assistant_id
     )
 
-    with st.status("Generando respuesta...", expanded=True) as status:
-        barra = st.progress(0)
-        intentos = 0
+    with st.spinner("Pensando..."):
         while True:
-            status_info = openai.beta.threads.runs.retrieve(
+            status = openai.beta.threads.runs.retrieve(
                 thread_id=st.session_state.thread_id,
                 run_id=run.id
             )
-            intentos += 1
-            barra.progress(min(intentos * 5, 100))
-            if status_info.status == "completed":
-                status.update(label="¡Listo!", state="complete")
+            if status.status == "completed":
                 break
-            elif status_info.status == "failed":
-                status.update(label="Hubo un error al procesar la respuesta", state="error")
-                break
-            time.sleep(1)
             time.sleep(1)
 
         messages = openai.beta.threads.messages.list(
